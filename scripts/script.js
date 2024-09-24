@@ -10,4 +10,5 @@ inputForm.addEventListener('submit', function(e){
     newColorObj.secondNum = document.querySelector('#num2').value
     newColorObj.thirdNumb = document.querySelector('#num3').value
     console.log(newColorObj)
+    
 })
