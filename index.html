@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Color Generator</title>
-   <script defer src="./scripts/script.js"></script>
-   <link rel="stylesheet" href="./styles/style.css">
+    <script defer src="./scripts/script.js"></script>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
     <h1>Color Generator</h1>
@@ -20,13 +20,14 @@
         <label for="num3">Third Number</label>
         <input id="num3" type="number" min="0" max="255" placeholder="0" required>
         <br>
-        <input type="submit">
+        <input type="submit" value="Generate Color">
     </form>
-
+    <div id="color-container"></div>
+    <button id="display-colors-button">Display Saved Colors</button>
 </body>
 </html>
-<!-- Use the parent-child-sibling relationship to navigate between elements at least once (firstChild, lastChild, parentNode, nextElementSibling, etc.). 5% 
-Iterate over a collection of elements to accomplish some task. 10% 
+<!--  (firstChild, lastChild, parentNode, nextElementSibling, etc.). 5% 
+. 10% 
 Use the DocumentFragment interface or HTML templating with the cloneNode method to create templated content. 2% 
 Modify the HTML or text content of at least one element in response to user interaction using innerHTML, innerText, or textContent. 10% 
 Modify at least one attribute of an element in response to user interaction. 3%
