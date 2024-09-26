@@ -1,4 +1,4 @@
-let colorArray = [];
+let colorArray = JSON.parse(window.localStorage.getItem('savedColors')) || [];
 let tempArray = [];
 
 // Cache at least one element using getElementById
@@ -7,20 +7,30 @@ let inputForm = document.getElementById('input-form');
 // Cache at least one element using querySelector or querySelectorAll
 let colorContainer = document.querySelector('#color-container');
 
+// Create a template for color display using cloneNode
+let colorTemplate = document.createElement('div');
+colorTemplate.classList.add('color-display-template');
+colorTemplate.innerHTML = `<span class="color-info"></span>`;
+colorTemplate.style.width = '200px';
+colorTemplate.style.height = '50px';
+colorTemplate.style.margin = '10px 0';
+
 inputForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    // Include at least one form and/or input with DOM event-based validation
+    // Checking to make sure only one entry per RGB combination can be entered
     try {
         for (let color of tempArray) {
             if (color.firstNum === document.querySelector('#num1').value &&
                 color.secondNum === document.querySelector('#num2').value &&
                 color.thirdNum === document.querySelector('#num3').value) {
-                throw new Error('This combination of colors is already saved. Please do not try to add duplicate colors.');
+                window.alert('This combination of colors is already saved. Please do not try to add duplicate colors.');
+                return;
             }
         }
     } catch (err) {
-        alert(err);
+        // Use at least two Browser Object Model (BOM) properties or methods
+        window.alert(err.message);
         return;
     }
 
@@ -31,21 +41,20 @@ inputForm.addEventListener('submit', function (e) {
     };
 
     console.log(newColorObj);
-    tempArray.push(newColorObj)
-  
+    tempArray.push(newColorObj);
 
-    // Create a DocumentFragment to manage new elements
+    // Use the DocumentFragment interface or HTML templating with the cloneNode method to create templated content
     let fragment = document.createDocumentFragment();
 
-    // Create naming form and new color div
+
+    let clonedColorDiv = colorTemplate.cloneNode(true);
+    clonedColorDiv.style.backgroundColor = `RGB(${newColorObj.firstNum}, ${newColorObj.secondNum}, ${newColorObj.thirdNum})`;
+    clonedColorDiv.querySelector('.color-info').textContent = `RGB: (${newColorObj.firstNum}, ${newColorObj.secondNum}, ${newColorObj.thirdNum})`;
+
+    // Append cloned node to the fragment
+    fragment.appendChild(clonedColorDiv);
+
     let namingForm = document.createElement('form');
-    let newColorDiv = document.createElement('div');
-    newColorDiv.classList.add('color-div');
-    newColorDiv.style.backgroundColor = `RGB(${newColorObj.firstNum}, ${newColorObj.secondNum}, ${newColorObj.thirdNum})`;
-
-    // Use appendChild to add new elements to the DocumentFragment
-    fragment.appendChild(newColorDiv);
-
     let namingInput = document.createElement('input');
     namingInput.type = 'text';
     namingInput.placeholder = 'Type in a name for your new color';
@@ -57,55 +66,54 @@ inputForm.addEventListener('submit', function (e) {
 
     namingForm.addEventListener('submit', function (e) {
         e.preventDefault();
+
+        // Checking to make sure any name is entered only once
         for (let color of colorArray) {
             if (color.name === namingInput.value) {
-                alert(`You already have a color named ${namingInput.value}, please pick another name`);
+                window.alert(`You already have a color named ${namingInput.value}, please pick another name.`);
                 return;
             }
         }
 
-        // Assign the name to newColorObj
         newColorObj.name = namingInput.value;
-
-        // Only push to colorArray here
         colorArray.push(newColorObj);
 
-        // Create a new color display element
-        let colorDisplayDiv = document.createElement('div');
-        colorDisplayDiv.textContent = `Color: ${namingInput.value} (RGB: ${newColorObj.firstNum}, ${newColorObj.secondNum}, ${newColorObj.thirdNum})`;
-        colorDisplayDiv.style.backgroundColor = `RGB(${newColorObj.firstNum}, ${newColorObj.secondNum}, ${newColorObj.thirdNum})`;
-        colorDisplayDiv.classList.add('color-display');
+        // Use at least two Browser Object Model (BOM) properties or methods
+        window.localStorage.setItem('savedColors', JSON.stringify(colorArray));
 
-        // Append the color display to the color container
+        let colorDisplayDiv = clonedColorDiv;
+        colorDisplayDiv.querySelector('.color-info').textContent = `Color: ${namingInput.value} (RGB: ${newColorObj.firstNum}, ${newColorObj.secondNum}, ${newColorObj.thirdNum})`;
+
         colorContainer.appendChild(colorDisplayDiv);
 
-        // Use the parent-child-sibling relationship to navigate between elements at least once
         namingForm.parentNode.removeChild(namingForm);
 
-        // Show last added color name in a message
         let message = document.createElement('div');
         message.textContent = `You have named your color: ${namingInput.value}`;
         document.body.appendChild(message);
-        
-        // Clear input fields
+
         inputForm.reset();
     });
 
-    // Append the fragment to the document body
     document.body.appendChild(fragment);
     document.body.appendChild(namingForm);
 });
 
-// Example of iterating over elements to display saved colors
+// Function to display saved colors from localStorage
 function displaySavedColors() {
     colorContainer.innerHTML = '';
-    colorArray.forEach((color, index) => {
-        let colorDisplayDiv = document.createElement('div');
-        colorDisplayDiv.textContent = `Color ${index + 1}: RGB(${color.firstNum}, ${color.secondNum}, ${color.thirdNum}) - Name: ${color.name || 'Unnamed'}`;
-        colorDisplayDiv.style.backgroundColor = `RGB(${color.firstNum}, ${color.secondNum}, ${color.thirdNum})`;
-        colorContainer.appendChild(colorDisplayDiv);
+    let savedColors = JSON.parse(window.localStorage.getItem('savedColors')) || [];
+    savedColors.forEach((color, index) => {
+        let clonedColorDiv = colorTemplate.cloneNode(true);
+        clonedColorDiv.style.backgroundColor = `RGB(${color.firstNum}, ${color.secondNum}, ${color.thirdNum})`;
+        clonedColorDiv.querySelector('.color-info').textContent = `Color ${index + 1}: RGB(${color.firstNum}, ${color.secondNum}, ${color.thirdNum}) - Name: ${color.name || 'Unnamed'}`;
+
+        colorContainer.appendChild(clonedColorDiv);
     });
 }
 
 // Call the function to display saved colors when needed
 document.getElementById('display-colors-button').addEventListener('click', displaySavedColors);
+
+// Load saved colors 
+window.addEventListener('load', displaySavedColors);
