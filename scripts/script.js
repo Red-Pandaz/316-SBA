@@ -28,6 +28,14 @@ inputForm.addEventListener('submit', function (e) {
                 return;
             }
         }
+        for (let color of JSON.parse(localStorage.getItem('savedColors'))) {
+            if (color.firstNum === document.querySelector('#num1').value &&
+                color.secondNum === document.querySelector('#num2').value &&
+                color.thirdNum === document.querySelector('#num3').value) {
+                window.alert('This combination of colors is already saved. Please do not try to add duplicate colors.');
+                return;
+            }
+        }
     } catch (err) {
         // Use at least two Browser Object Model (BOM) properties or methods
         window.alert(err.message);
