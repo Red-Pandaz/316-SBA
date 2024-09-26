@@ -115,5 +115,3 @@ function displaySavedColors() {
 // Call the function to display saved colors when needed
 document.getElementById('display-colors-button').addEventListener('click', displaySavedColors);
 
-// Load saved colors 
-window.addEventListener('load', displaySavedColors);
