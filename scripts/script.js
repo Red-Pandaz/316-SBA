@@ -28,7 +28,18 @@ inputForm.addEventListener('submit', function (e) {
                 return;
             }
         }
-        for (let color of JSON.parse(localStorage.getItem('savedColors'))) {
+        let savedColors = localStorage.getItem('savedColors');
+        if (savedColors) {
+            try {
+                savedColors = JSON.parse(savedColors) || [];
+            } catch (err) {
+                console.error('Error parsing saved colors:', err);
+                savedColors = []; 
+            }
+        } else {
+            savedColors = [];
+        }
+        for (let color of savedColors) {
             if (color.firstNum === document.querySelector('#num1').value &&
                 color.secondNum === document.querySelector('#num2').value &&
                 color.thirdNum === document.querySelector('#num3').value) {
